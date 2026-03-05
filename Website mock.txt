@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flare Big Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #0d0f14;
+    color: white;
+}
+
+header {
+    background: #11151d;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #1f2430;
+}
+
+h1 {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 2px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+select, button {
+    padding: 10px;
+    background: #1a1f2b;
+    color: white;
+    border: 1px solid #2c3242;
+    border-radius: 6px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.card {
+    background: #151a24;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #242b3b;
+    transition: 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #4da3ff;
+}
+
+.rank {
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 5px 0;
+}
+
+.tier {
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.blue { background: #1e90ff; }
+.round1 { background: #8a2be2; }
+.day2 { background: #f39c12; }
+.sleeper { background: #2ecc71; }
+
+.meta {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-top: 10px;
+}
+
+.footer {
+    text-align: center;
+    padding: 30px;
+    opacity: 0.5;
+    font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>FLARE BIG BOARD — POST COMBINE</h1>
+</header>
+
+<div class="controls">
+<select id="positionFilter">
+<option value="all">All Positions</option>
+<option value="QB">QB</option>
+<option value="WR">WR</option>
+<option value="EDGE">EDGE</option>
+<option value="OT">OT</option>
+<option value="CB">CB</option>
+</select>
+
+<select id="tierFilter">
+<option value="all">All Tiers</option>
+<option value="blue">Blue Chip</option>
+<option value="round1">Round 1</option>
+<option value="day2">Day 2</option>
+<option value="sleeper">Sleeper</option>
+</select>
+
+<button onclick="sortByRank()">Sort by Rank</button>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="footer">
+Flare Scouting © 2026
+</div>
+
+<script>
+const players = [
+{
+rank: 1,
+name: "Player Name",
+position: "QB",
+school: "School",
+tier: "blue",
+height: "6'3",
+weight: "220",
+strengths: "Elite arm talent, off-platform throws",
+weaknesses: "Processing under pressure",
+comp: "NFL Comp"
+},
+{
+rank: 2,
+name: "Player Name",
+position: "EDGE",
+school: "School",
+tier: "round1",
+height: "6'5",
+weight: "255",
+strengths: "Explosive first step",
+weaknesses: "Run discipline",
+comp: "NFL Comp"
+}
+];
+
+function renderBoard() {
+const board = document.getElementById("board");
+board.innerHTML = "";
+
+const positionFilter = document.getElementById("positionFilter").value;
+const tierFilter = document.getElementById("tierFilter").value;
+
+players
+.filter(p => (positionFilter === "all" || p.position === positionFilter))
+.filter(p => (tierFilter === "all" || p.tier === tierFilter))
+.forEach(player => {
+const card = document.createElement("div");
+card.className = "card";
+
+card.innerHTML = `
+<div class="rank">Rank #${player.rank}</div>
+<div class="name">${player.name}</div>
+<div class="tier ${player.tier}">${player.tier.toUpperCase()}</div>
+<div class="meta">${player.position} | ${player.school} | ${player.height} | ${player.weight}</div>
+
+<div class="section-title">Strengths</div>
+<div>${player.strengths}</div>
+
+<div class="section-title">Weaknesses</div>
+<div>${player.weaknesses}</div>
+
+<div class="section-title">NFL Comp</div>
+<div>${player.comp}</div>
+`;
+
+board.appendChild(card);
+});
+}
+
+function sortByRank() {
+players.sort((a, b) => a.rank - b.rank);
+renderBoard();
+}
+
+document.getElementById("positionFilter").addEventListener("change", renderBoard);
+document.getElementById("tierFilter").addEventListener("change", renderBoard);
+
+renderBoard();
+</script>
+
+</body>
+</html>
